@@ -28,6 +28,24 @@ Pain points with traditional knowledge base approaches:
 | Complex integration | Requires lots of glue code | 15 MCP tools, works out of the box |
 | No traceability | Can't tell where answers came from | `source` field tracks provenance, `wiki_lint` detects staleness |
 
+## What You'll Get
+
+After running this demo, the Agent autonomously produces a structured wiki knowledge base from 10 arXiv papers:
+
+**Wiki knowledge graph** — concepts and papers connected via `[[wikilinks]]`, visualized as an interactive graph:
+
+![Wiki knowledge graph](../assets/demo1.png)
+
+**Concept pages** — cross-paper synthesis of key topics (e.g. multi-hop QA), with related approaches and benchmarks:
+
+![Concept wiki page](../assets/demo2.png)
+
+**Paper summaries** — structured per-paper pages with key contributions, methods, results, and cross-references:
+
+![Paper wiki page](../assets/demo3.png)
+
+---
+
 ## Typical Use Cases
 
 ### Use Case 1: Research Literature Survey
