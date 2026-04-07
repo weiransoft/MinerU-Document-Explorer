@@ -232,4 +232,4 @@ MinerU Document Explorer 构建在以下项目之上：
 
 ### v1 — 2026-03-30（上一版本）
 
-OpenClaw 原生 Agent Skill（`doc-search` CLI）。四大能力：逻辑检索、语义检索、关键词检索、证据提取。
+OpenClaw 原生 Agent Skill（`doc-search` CLI）。四大能力：逻辑检索、语义检索、关键词检索、证据提取。见[v1版仓库](https://github.com/opendatalab/MinerU-Document-Explorer/tree/v1).
