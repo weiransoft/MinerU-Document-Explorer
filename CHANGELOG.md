@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [1.0.5] - 2026-04-07
+
+### Fixes
+
+- **PDF doc-read address parsing** — accept both `page:N` and `pages:N` formats;
+  previously only `pages:` (plural) was recognized, causing `doc-read` with
+  `page:1` to return "Invalid address format".
+
+### Chores
+
+- Remove legacy `bin/mineru-rag` alias (no longer referenced in package.json).
+
 ## [1.0.4] - 2026-04-07
 
 ### Fixes
