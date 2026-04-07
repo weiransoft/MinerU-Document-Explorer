@@ -4,9 +4,17 @@
 // The project was renamed from MinerU-RAG to MinerU Document Explorer.
 
 import { realpathSync } from "node:fs";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { execFileSync } from "node:child_process";
 
 const binDir = dirname(realpathSync(fileURLToPath(import.meta.url)));
 const cli = join(binDir, "..", "dist", "cli", "qmd.js");
-await import(pathToFileURL(cli).href);
+
+try {
+  execFileSync(process.execPath, [cli, ...process.argv.slice(2)], {
+    stdio: "inherit",
+  });
+} catch (err) {
+  process.exitCode = err.status ?? 1;
+}

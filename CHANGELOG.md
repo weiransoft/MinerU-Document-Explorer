@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-04-07
+
 ### Fixes
 
 - **Windows stdio MCP fix** — rewrote `bin/qmd` and `bin/mineru-rag` from
