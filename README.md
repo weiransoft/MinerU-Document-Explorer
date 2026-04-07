@@ -265,10 +265,10 @@ MinerU Document Explorer builds upon these foundational projects:
 
 ## 📝 Changelog
 
-### v2 — 2026-04-07 (Current)
+### v1 — 2026-04-07 (Current)
 
 Rebuilt from an OpenClaw agent skill into a full agent-native knowledge engine: npm package (`npm install -g mineru-document-explorer`), `qmd` CLI, MCP server with 15 tools across three groups (Retrieval / Deep Reading / Knowledge Ingestion), multi-format support (MD, PDF, DOCX, PPTX), hybrid search (BM25 + vector + LLM reranking), and LLM Wiki knowledge base pattern.
 
-### v1 — 2026-03-30 (Previous)
+### v0 — 2026-03-30 (Previous)
 
-OpenClaw-native agent skill (`doc-search` CLI). Four capabilities: Logic Retrieval, Semantic Retrieval, Keyword Retrieval, Evidence Extraction. See the [v1 repository](https://github.com/opendatalab/MinerU-Document-Explorer/tree/v1).
+OpenClaw-native agent skill (`doc-search` CLI). Four capabilities: Logic Retrieval, Semantic Retrieval, Keyword Retrieval, Evidence Extraction. See the [v0 repository](https://github.com/opendatalab/MinerU-Document-Explorer/tree/v0).
