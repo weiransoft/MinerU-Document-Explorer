@@ -1,5 +1,12 @@
-#!/bin/sh
-# Legacy alias — delegates to the qmd CLI.
-# The project was renamed from MinerU-RAG to MinerU Document Explorer.
-DIR="$(cd -P "$(dirname "$0")" && pwd)"
-exec "$DIR/qmd" "$@"
+#!/usr/bin/env node
+
+// Legacy alias — delegates to the qmd CLI.
+// The project was renamed from MinerU-RAG to MinerU Document Explorer.
+
+import { realpathSync } from "node:fs";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { dirname, join } from "node:path";
+
+const binDir = dirname(realpathSync(fileURLToPath(import.meta.url)));
+const cli = join(binDir, "..", "dist", "cli", "qmd.js");
+await import(pathToFileURL(cli).href);

@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Fixes
+
+- **Windows stdio MCP fix** — rewrote `bin/qmd` and `bin/mineru-rag` from
+  `#!/bin/sh` shell scripts to `#!/usr/bin/env node` Node.js scripts so npm can
+  create proper `.cmd`/`.ps1` wrappers on Windows. Previously the shell-based
+  launcher failed with "The system cannot find the path specified" because
+  Windows has no `sh`. Closes #1.
+
 ### Features
 
 - **CLI doc reading commands** — `qmd doc-toc`, `qmd doc-read`, `qmd doc-grep`
