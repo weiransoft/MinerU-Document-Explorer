@@ -113,10 +113,11 @@ export namespace Address {
   }
 
   /**
-   * Parse a pages:N or pages:N-M address.
+   * Parse a page:N, page:N-M, pages:N, or pages:N-M address.
+   * Accepts both singular "page:" and plural "pages:" for convenience.
    */
   export function parsePages(address: string): { from: number; to: number } | null {
-    const m = address.match(/^pages:(\d+)(?:-(\d+))?$/);
+    const m = address.match(/^pages?:(\d+)(?:-(\d+))?$/);
     if (!m) return null;
     const from = parseInt(m[1]!, 10);
     const to = m[2] ? parseInt(m[2]!, 10) : from;
@@ -142,7 +143,7 @@ export namespace Address {
       case "md":
         return /^line:\d+(-\d+)?$/.test(address);
       case "pdf":
-        return /^pages:\d+(-\d+)?$/.test(address);
+        return /^pages?:\d+(-\d+)?$/.test(address);
       case "docx":
         return /^section:\d+$/.test(address);
       case "pptx":
