@@ -1269,7 +1269,11 @@ export async function generateEmbeddings(
   const now = new Date().toISOString();
 
   if (options?.force) {
-    clearAllEmbeddings(db);
+    if (options.collections && options.collections.length > 0) {
+      clearEmbeddingsForCollections(db, options.collections);
+    } else {
+      clearAllEmbeddings(db);
+    }
   }
 
   const hashesToEmbed = getHashesForEmbedding(db, options?.collections);
@@ -2603,6 +2607,46 @@ export function getHashesForEmbedding(db: Database, collections?: string[]): { h
  */
 export function clearAllEmbeddings(db: Database): void {
   db.exec(`BEGIN; DELETE FROM content_vectors; DROP TABLE IF EXISTS vectors_vec; COMMIT;`);
+}
+
+/**
+ * Clear embeddings only for hashes belonging to documents in the given collections.
+ */
+export function clearEmbeddingsForCollections(db: Database, collections: string[]): void {
+  const placeholders = collections.map(() => "?").join(", ");
+  db.exec("BEGIN");
+  try {
+    const hashes = db.prepare(`
+      SELECT DISTINCT hash FROM documents
+      WHERE active = 1 AND collection IN (${placeholders})
+    `).all(...collections) as { hash: string }[];
+
+    if (hashes.length > 0) {
+      const hashValues = hashes.map((h) => h.hash);
+      const hashPlaceholders = hashValues.map(() => "?").join(", ");
+
+      // Collect hash_seq keys before deleting from content_vectors
+      const seqRows = db.prepare(
+        `SELECT hash || '_' || seq as hash_seq FROM content_vectors WHERE hash IN (${hashPlaceholders})`
+      ).all(...hashValues) as { hash_seq: string }[];
+
+      // Delete from vectors_vec virtual table
+      if (seqRows.length > 0) {
+        const seqPlaceholders = seqRows.map(() => "?").join(", ");
+        try {
+          db.prepare(`DELETE FROM vectors_vec WHERE hash_seq IN (${seqPlaceholders})`).run(...seqRows.map((r) => r.hash_seq));
+        } catch {
+          // vectors_vec may not exist if embeddings were never fully generated
+        }
+      }
+
+      db.prepare(`DELETE FROM content_vectors WHERE hash IN (${hashPlaceholders})`).run(...hashValues);
+    }
+    db.exec("COMMIT");
+  } catch (err) {
+    db.exec("ROLLBACK");
+    throw err;
+  }
 }
 
 /**

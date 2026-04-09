@@ -302,6 +302,7 @@ export interface QMDStore {
   embed(options?: {
     force?: boolean;
     model?: string;
+    collections?: string[];
     onProgress?: (info: EmbedProgress) => void;
   }): Promise<EmbedResult>;
 
@@ -644,6 +645,7 @@ export async function createStore(options: StoreOptions): Promise<QMDStore> {
       return generateEmbeddings(internal, {
         force: embedOpts?.force,
         model: embedOpts?.model,
+        collections: embedOpts?.collections,
         onProgress: embedOpts?.onProgress,
       });
     },

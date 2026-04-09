@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 
-## [1.0.6] - 2026-04-09
+## [1.0.7] - 2026-04-09
 
 ### Fixes
 
@@ -17,6 +17,15 @@
   GGUF was already cached locally; the resolver now checks the local cache
   directory first and only falls back to HF URI resolution when the file is not
   found. #2
+- **Embed: `--force` + `--collection` no longer clears all vectors** — previously
+  `qmd embed -c mycoll -f` wiped embeddings for every collection; now only the
+  specified collection's vectors are cleared and re-generated. #2
+- **Embed: GGUF cache match tightened** — local cache lookup used `includes()`
+  which could false-match `.etag` sidecar files or unrelated models with similar
+  names; now uses exact-name or `endsWith()` matching. #2
+- **SDK: `embed({ collections })` parameter added** — the programmatic
+  `QMDStore.embed()` API now accepts an optional `collections` filter, matching
+  the CLI behavior. #2
 
 ### Docs
 
@@ -881,7 +890,8 @@ notes, journals, and meeting transcripts.
 - CLI: `qmd add`, `qmd embed`, `qmd search`, `qmd vsearch`, `qmd query`,
   `qmd get`. ~1800 lines of TypeScript in a single `qmd.ts` file.
 
-[Unreleased]: https://github.com/opendatalab/MinerU-Document-Explorer/compare/v1.0.6...HEAD
+[Unreleased]: https://github.com/opendatalab/MinerU-Document-Explorer/compare/v1.0.7...HEAD
+[1.0.7]: https://github.com/opendatalab/MinerU-Document-Explorer/compare/v1.0.6...v1.0.7
 [1.0.6]: https://github.com/opendatalab/MinerU-Document-Explorer/compare/v1.0.5...v1.0.6
 [1.0.0]: https://github.com/opendatalab/MinerU-Document-Explorer/releases/tag/v1.0.0
 [0.9.0]: https://github.com/opendatalab/MinerU-Document-Explorer/compare/v0.8.0...v0.9.0

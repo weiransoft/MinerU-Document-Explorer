@@ -263,7 +263,7 @@ export async function pullModels(
     const entries = readdirSync(cacheDir, { withFileTypes: true });
     const cached = filename
       ? entries
-          .filter((entry) => entry.isFile() && entry.name.includes(filename))
+          .filter((entry) => entry.isFile() && (entry.name === filename || entry.name.endsWith(filename)))
           .map((entry) => join(cacheDir, entry.name))
       : [];
 
@@ -573,9 +573,15 @@ export class LlamaCpp implements LLM {
     if (modelUri.startsWith("hf:")) {
       const filename = modelUri.split("/").pop();
       if (filename) {
+        const exactPath = join(this.modelCacheDir, filename);
+        if (existsSync(exactPath)) {
+          return exactPath;
+        }
+        // node-llama-cpp may cache with a hash prefix — match files that end
+        // with the expected filename (but not .etag / metadata sidecars)
         const entries = readdirSync(this.modelCacheDir, { withFileTypes: true });
         const localMatch = entries.find(
-          (e) => e.isFile() && e.name.includes(filename)
+          (e) => e.isFile() && e.name.endsWith(filename)
         );
         if (localMatch) {
           return join(this.modelCacheDir, localMatch.name);

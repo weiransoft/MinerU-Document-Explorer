@@ -1563,11 +1563,15 @@ async function vectorIndex(model: string = DEFAULT_EMBED_MODEL, force: boolean =
   const storeInstance = getStore();
   const db = storeInstance.db;
 
-  if (force) {
-    console.log(`${c.yellow}Force re-indexing: clearing all vectors...${c.reset}`);
-  }
   if (collections && collections.length > 0) {
     console.log(`${c.dim}Filtering by collection(s): ${collections.join(", ")}${c.reset}`);
+  }
+  if (force) {
+    if (collections && collections.length > 0) {
+      console.log(`${c.yellow}Force re-indexing: clearing vectors for ${collections.join(", ")}...${c.reset}`);
+    } else {
+      console.log(`${c.yellow}Force re-indexing: clearing all vectors...${c.reset}`);
+    }
   }
 
   // Check if there's work to do before starting
