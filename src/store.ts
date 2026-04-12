@@ -17,7 +17,7 @@ import { parseLinks } from "./links.js";
 import { initializeSchema } from "./db-schema.js";
 import picomatch from "picomatch";
 import { createHash } from "crypto";
-import { readFileSync, realpathSync, statSync, mkdirSync } from "node:fs";
+import { readFileSync, realpathSync, statSync, mkdirSync, existsSync } from "node:fs";
 // Note: node:path resolve is not imported — we export our own cross-platform resolve()
 import fastGlob from "fast-glob";
 import {
@@ -1598,6 +1598,8 @@ export type DocumentNotFound = {
   error: "not_found";
   query: string;
   similarFiles: string[];
+  /** True when the file exists on disk but is not indexed in any collection. */
+  existsOnDisk?: boolean;
 };
 
 /**
@@ -2789,7 +2791,18 @@ export function findDocument(db: Database, filename: string, options: { includeB
 
   if (!doc) {
     const similar = findSimilarFiles(db, filepath, 5, 5);
-    return { error: "not_found", query: filename, similarFiles: similar };
+
+    // Check if the file exists on disk but isn't indexed
+    let existsOnDisk = false;
+    if (!filepath.startsWith('qmd://') && !isDocid(filepath)) {
+      let absPath = filepath;
+      if (!absPath.startsWith('/') && !(/^[A-Za-z]:/.test(absPath))) {
+        absPath = resolve(process.cwd(), absPath);
+      }
+      try { existsOnDisk = existsSync(absPath) && statSync(absPath).isFile(); } catch { /* ignore */ }
+    }
+
+    return { error: "not_found", query: filename, similarFiles: similar, ...(existsOnDisk && { existsOnDisk }) };
   }
 
   // Get context using virtual path

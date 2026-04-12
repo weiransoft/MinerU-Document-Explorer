@@ -19,6 +19,13 @@ export function registerDocumentTools(server: McpServer, store: QMDStore): void 
   async function getBackendWithValidation(file: string) {
     const result = await store.get(file, { includeBody: false });
     if ("error" in result) {
+      if (result.existsOnDisk) {
+        throw new Error(
+          `File exists but is not indexed: ${file}\n\n` +
+          `To use doc_* tools, add the file's directory to a collection first:\n` +
+          `  qmd collection add <parent-directory> --name <collection-name>`
+        );
+      }
       throw new Error(`Document not found: ${file}`);
     }
     const format = detectFormat(result.filepath);

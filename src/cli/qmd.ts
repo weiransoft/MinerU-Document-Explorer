@@ -140,6 +140,25 @@ function closeDb(): void {
   }
 }
 
+function printDocNotFound(result: { query: string; similarFiles: string[]; existsOnDisk?: boolean }): void {
+  if (result.existsOnDisk) {
+    console.error(`File exists but is not indexed: ${result.query}`);
+    console.error(``);
+    console.error(`To use doc-* commands, add the file's directory to a collection first:`);
+    console.error(``);
+    console.error(`  qmd collection add <parent-directory> --name <collection-name>`);
+    console.error(`  qmd doc-toc <collection-name>/<filename>`);
+  } else {
+    console.error(`Document not found: ${result.query}`);
+    if (result.similarFiles.length > 0) {
+      console.error(`\nDid you mean one of these?`);
+      for (const f of result.similarFiles) {
+        console.error(`  ${f}`);
+      }
+    }
+  }
+}
+
 function getDbPath(): string {
   return store?.dbPath ?? storeDbPathOverride ?? getDefaultDbPath();
 }
@@ -3473,7 +3492,7 @@ if (isMain) {
       const storeRef = getStore();
       const docResult = storeRef.findDocument(cli.args[0], { includeBody: false });
       if ("error" in docResult) {
-        console.error(`Document not found: ${cli.args[0]}`);
+        printDocNotFound(docResult);
         process.exit(1);
       }
       const { detectFormat: detect } = await import("../backends/registry.js");
@@ -3501,7 +3520,7 @@ if (isMain) {
       const storeRef = getStore();
       const docResult = storeRef.findDocument(cli.args[0], { includeBody: false });
       if ("error" in docResult) {
-        console.error(`Document not found: ${cli.args[0]}`);
+        printDocNotFound(docResult);
         process.exit(1);
       }
       const { detectFormat: detect } = await import("../backends/registry.js");
@@ -3530,7 +3549,7 @@ if (isMain) {
       const storeRef = getStore();
       const docResult = storeRef.findDocument(cli.args[0], { includeBody: false });
       if ("error" in docResult) {
-        console.error(`Document not found: ${cli.args[0]}`);
+        printDocNotFound(docResult);
         process.exit(1);
       }
       const { detectFormat: detect } = await import("../backends/registry.js");

@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Fixes
+
+- **Actionable error for unindexed files in doc-\* commands** — when `doc-toc`,
+  `doc-read`, or `doc-grep` is called with a valid filesystem path that isn't
+  indexed, the error now explains the file exists but needs to be added to a
+  collection first, with example commands. Previously showed a confusing
+  "Document not found" message. #3
+
 ## [1.0.7] - 2026-04-09
 
 ### Fixes
