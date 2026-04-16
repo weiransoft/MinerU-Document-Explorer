@@ -2,6 +2,19 @@
 
 ## [Unreleased]
 
+### Fixes
+
+- **MCP server shows 0 collections in VSCode sidebar** — the MCP server now
+  syncs the YAML config (`~/.config/qmd/index.yml`) into the SQLite database on
+  startup, matching CLI behavior. Previously the MCP server ran in "DB-only
+  mode" and relied on a prior CLI invocation having populated the same database.
+  When the VSCode extension host resolved a different `HOME` or cache path than
+  the user's shell, the MCP process would open an empty database. #6
+- **Cross-platform `homedir()` consistency** — `store.ts` now uses
+  `os.homedir()` as fallback instead of only `process.env.HOME` (which is unset
+  on Windows). This ensures the SQLite database path resolves to the same
+  location as the YAML config regardless of runtime environment. #6
+
 ## [1.0.8] - 2026-04-12
 
 ### Fixes

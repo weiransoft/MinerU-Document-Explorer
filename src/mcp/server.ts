@@ -16,6 +16,7 @@ import { WebStandardStreamableHTTPServerTransport }
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
 import type { QMDStore, ExpandedQuery } from "../index.js";
 import { getDefaultDbPath } from "../index.js";
+import { getConfigPath, configExists } from "../collections.js";
 
 // =============================================================================
 // Modular imports
@@ -81,7 +82,11 @@ async function createMcpServer(store: QMDStore): Promise<McpServer> {
 
 export async function startMcpServer(dbPath?: string): Promise<void> {
   const { createStore } = await import("../index.js");
-  const store = await createStore({ dbPath: dbPath ?? getDefaultDbPath() });
+  const configPath = configExists() ? getConfigPath() : undefined;
+  const store = await createStore({
+    dbPath: dbPath ?? getDefaultDbPath(),
+    ...(configPath ? { configPath } : {}),
+  });
   const server = await createMcpServer(store);
   const transport = new StdioServerTransport();
 
@@ -134,7 +139,11 @@ async function collectBody(req: IncomingMessage): Promise<string> {
  */
 export async function startMcpHttpServer(port: number, options?: { quiet?: boolean; dbPath?: string }): Promise<HttpServerHandle> {
   const { createStore } = await import("../index.js");
-  const store = await createStore({ dbPath: options?.dbPath ?? getDefaultDbPath() });
+  const configPath = configExists() ? getConfigPath() : undefined;
+  const store = await createStore({
+    dbPath: options?.dbPath ?? getDefaultDbPath(),
+    ...(configPath ? { configPath } : {}),
+  });
 
   // Pre-fetch default collection names
   const defaultCollectionNames = await store.getDefaultCollectionNames();

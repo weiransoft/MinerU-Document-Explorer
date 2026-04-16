@@ -41,7 +41,11 @@ import type {
 // Configuration
 // =============================================================================
 
-const HOME = process.env.HOME || "/tmp";
+import { homedir as osHomedir } from "os";
+
+// Use os.homedir() for cross-platform consistency (handles USERPROFILE on Windows).
+// process.env.HOME is unreliable in non-shell contexts (e.g., VSCode extension host).
+const HOME = process.env.HOME || osHomedir() || "/tmp";
 export const DEFAULT_EMBED_MODEL = "embeddinggemma";
 export const DEFAULT_RERANK_MODEL = "ExpedientFalcon/qwen3-reranker:0.6b-q8_0";
 export const DEFAULT_QUERY_MODEL = "Qwen/Qwen3-1.7B";
