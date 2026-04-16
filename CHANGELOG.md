@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.0.9] - 2026-04-15
+
 ### Fixes
 
 - **MCP server shows 0 collections in VSCode sidebar** — the MCP server now
