@@ -5,7 +5,7 @@
   MinerU Document Explorer
 </h1>
 
-<h4>Agent-native knowledge engine — search, deep-read, and build knowledge bases<br>from Markdown, PDF, DOCX, and PPTX.</h4>
+<h4>Agent-native knowledge engine — search, deep-read, and build knowledge bases<br>from Markdown, PDF, DOCX, PPTX, and HTML.</h4>
 
 <p>
   <a href="https://www.npmjs.com/package/mineru-document-explorer"><img src="https://img.shields.io/npm/v/mineru-document-explorer?style=flat-square&color=cb3837" alt="npm"/></a>
@@ -191,7 +191,7 @@ claude skill add ./skills/mineru-document-explorer/SKILL.md
 | **Agent integration (MCP)** | **15 tools** | Plugin | ❌ | ❌ |
 | **Deep reading within docs** | ✅ | ❌ | ❌ | ✅ |
 | **Wiki knowledge compilation** | ✅ | ❌ | Manual | ❌ |
-| **Formats** | MD, PDF, DOCX, PPTX | Many | MD | PDF, URL |
+| **Formats** | MD, PDF, DOCX, PPTX, HTML | Many | MD | PDF, URL |
 | **Search pipeline** | BM25 + vec + rerank | Configurable | Basic | Proprietary |
 | **Zero-config search** | ✅ `qmd search` | ❌ | Plugin | N/A |
 | **Open source** | MIT | MIT | Partial | ❌ |
@@ -281,7 +281,7 @@ MinerU Document Explorer builds upon these foundational projects:
 
 ### v1 — 2026-04-07 (Current)
 
-Rebuilt from an OpenClaw agent skill into a full agent-native knowledge engine: npm package (`npm install -g mineru-document-explorer`), `qmd` CLI, MCP server with 15 tools across three groups (Retrieval / Deep Reading / Knowledge Ingestion), multi-format support (MD, PDF, DOCX, PPTX), hybrid search (BM25 + vector + LLM reranking), and LLM Wiki knowledge base pattern.
+Rebuilt from an OpenClaw agent skill into a full agent-native knowledge engine: npm package (`npm install -g mineru-document-explorer`), `qmd` CLI, MCP server with 15 tools across three groups (Retrieval / Deep Reading / Knowledge Ingestion), multi-format support (MD, PDF, DOCX, PPTX, HTML), hybrid search (BM25 + vector + LLM reranking), and LLM Wiki knowledge base pattern.
 
 ### v0 — 2026-03-30 (Previous)
 
