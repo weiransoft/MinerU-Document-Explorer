@@ -10,6 +10,8 @@ const EXTENSION_MAP: Record<string, DocumentBackend["format"]> = {
   ".docx": "docx",
   ".ppt": "pptx",
   ".pptx": "pptx",
+  ".html": "html",
+  ".htm": "html",
 };
 
 /**
@@ -70,6 +72,11 @@ export async function getBackend(
       case "pptx": {
         const { createPptxBackend } = await import("./pptx.js");
         backend = createPptxBackend(store);
+        break;
+      }
+      case "html": {
+        const { createHtmlBackend } = await import("./html.js");
+        backend = createHtmlBackend(store);
         break;
       }
       default:

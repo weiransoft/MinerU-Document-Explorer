@@ -262,3 +262,68 @@ export async function extractPptxForIndex(
     },
   };
 }
+
+// ---------------------------------------------------------------------------
+// HTML extractor
+// ---------------------------------------------------------------------------
+
+/** Dependencies for HTML extraction. */
+export interface HtmlExtractorDeps {
+  extractHtml: (filepath: string) => Promise<any>;
+  getPythonError: (result: any) => string | null;
+  extractTitle: (content: string, filename: string) => string;
+}
+
+/**
+ * Extract an HTML file using BeautifulSoup.
+ */
+export async function extractHtmlForIndex(
+  filepath: string,
+  relativeFile: string,
+  deps: HtmlExtractorDeps,
+): Promise<FormatExtraction | null> {
+  let htmlData: any;
+  try {
+    htmlData = await deps.extractHtml(filepath);
+    const error = deps.getPythonError(htmlData);
+    if (error) return null;
+  } catch {
+    return null;
+  }
+
+  const sections = (htmlData.sections ?? []) as {
+    section_idx: number; heading?: string; level?: number; text: string;
+  }[];
+  const content = sections.map(s => s.text || '').filter(Boolean).join("\n\n");
+  if (!content.trim()) return null;
+
+  const title = deps.extractTitle(content, relativeFile)
+    || relativeFile.split('/').pop()?.replace(/\.html?$/i, '') || relativeFile;
+
+  return {
+    content,
+    title,
+    writeCache: (db, docid) => {
+      // Create sections_cache table if it doesn't exist
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS sections_cache (
+          docid    TEXT NOT NULL,
+          section_idx INTEGER NOT NULL,
+          text     TEXT NOT NULL,
+          source   TEXT NOT NULL,
+          PRIMARY KEY (docid, section_idx)
+        )
+      `);
+      db.exec(`CREATE INDEX IF NOT EXISTS idx_sections_cache_docid ON sections_cache(docid)`);
+      
+      db.prepare("DELETE FROM sections_cache WHERE docid = ?").run(docid);
+      const insert = db.prepare("INSERT INTO sections_cache (docid, section_idx, text, source) VALUES (?, ?, ?, ?)");
+      for (const s of sections) {
+        insert.run(docid, s.section_idx, s.text ?? '', "html");
+      }
+    },
+    cleanupCache: (db, docid) => {
+      db.prepare("DELETE FROM sections_cache WHERE docid = ?").run(docid);
+    },
+  };
+}

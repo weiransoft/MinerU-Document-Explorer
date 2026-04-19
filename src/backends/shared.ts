@@ -125,6 +125,17 @@ export namespace Address {
   }
 
   /**
+   * Parse a sections:N or sections:N-M address (for HTML).
+   */
+  export function parseSections(address: string): { from: number; to: number } | null {
+    const m = address.match(/^sections?:(\d+)(?:-(\d+))?$/);
+    if (!m) return null;
+    const from = parseInt(m[1]!, 10);
+    const to = m[2] ? parseInt(m[2]!, 10) : from;
+    return { from, to };
+  }
+
+  /**
    * Parse a line:N or line:N-M address (for markdown).
    */
   export function parseLine(address: string): { from: number; to?: number } | null {
@@ -138,7 +149,7 @@ export namespace Address {
   /**
    * Check if address format is valid for a given format.
    */
-  export function isValidFor(address: string, format: "md" | "pdf" | "docx" | "pptx"): boolean {
+  export function isValidFor(address: string, format: "md" | "pdf" | "docx" | "pptx" | "html"): boolean {
     switch (format) {
       case "md":
         return /^line:\d+(-\d+)?$/.test(address);
@@ -148,6 +159,8 @@ export namespace Address {
         return /^section:\d+$/.test(address);
       case "pptx":
         return /^slide:\d+$/.test(address);
+      case "html":
+        return /^sections?:\d+(-\d+)?$/.test(address);
     }
   }
 }

@@ -1162,6 +1162,29 @@ export async function reindexCollection(
       continue;
     }
 
+    if (fileExt === 'html' || fileExt === 'htm') {
+      const { extractHtml, getPythonError } = await import("./backends/python-utils.js");
+      const { extractHtmlForIndex, indexBinaryDocument } = await import("./backends/indexing.js");
+
+      const extraction = await extractHtmlForIndex(filepath, relativeFile, {
+        extractHtml, getPythonError, extractTitle,
+      });
+      if (!extraction) {
+        processed++;
+        options?.onProgress?.({ file: relativeFile, current: processed, total });
+        continue;
+      }
+      const result = await indexBinaryDocument(db, extraction, collectionName, path, filepath, now, {
+        hashContent, findActiveDocument, insertContent, insertDocument, updateDocument,
+      });
+      if (result === "indexed") indexed++;
+      else if (result === "updated") updated++;
+      else unchanged++;
+      processed++;
+      options?.onProgress?.({ file: relativeFile, current: processed, total });
+      continue;
+    }
+
     let content: string;
     try {
       content = readFileSync(filepath, "utf-8");

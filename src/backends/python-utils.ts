@@ -12,10 +12,12 @@ import {
   PdfExtractionResultSchema,
   DocxExtractionResultSchema,
   PptxExtractionResultSchema,
+  HtmlExtractionResultSchema,
   PageIndexResultSchema,
   type PdfExtractionResult,
   type DocxExtractionResult,
   type PptxExtractionResult,
+  type HtmlExtractionResult,
   type PageIndexResult,
 } from "./python-types.js";
 
@@ -142,6 +144,14 @@ export async function extractPptx(filepath: string): Promise<PptxExtractionResul
 export async function extractPptxTables(filepath: string): Promise<PptxExtractionResult> {
   const data = await callPythonScript("extract_pptx.py", [filepath, "--tables-only"]);
   return parsePythonResult(data, PptxExtractionResultSchema, "extract_pptx.py");
+}
+
+/**
+ * Call extract_html.py and return typed HTML extraction result.
+ */
+export async function extractHtml(path: string): Promise<HtmlExtractionResult> {
+  const data = await callPythonScript("extract_html.py", [path]);
+  return parsePythonResult(data, HtmlExtractionResultSchema, "extract_html.py");
 }
 
 /**

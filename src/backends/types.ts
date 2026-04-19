@@ -62,7 +62,7 @@ export interface ContentElement {
  * MCP tools dispatch to the appropriate backend based on file extension.
  */
 export interface DocumentBackend {
-  readonly format: "md" | "pdf" | "docx" | "pptx";
+  readonly format: "md" | "pdf" | "docx" | "pptx" | "html";
   getToc(filepath: string, docid: string): Promise<TocSection[]>;
   readContent(filepath: string, docid: string, addresses: string[], maxTokens?: number): Promise<ContentSection[]>;
   grep(filepath: string, docid: string, pattern: string, flags?: string): Promise<GrepMatch[]>;

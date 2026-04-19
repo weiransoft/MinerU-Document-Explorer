@@ -114,6 +114,40 @@ export type PptxExtractionResult = z.infer<typeof PptxExtractionResultSchema>;
 export type PptxSlide = z.infer<typeof PptxSlideSchema>;
 
 // =============================================================================
+// HTML Extraction Types
+// =============================================================================
+
+/**
+ * Schema for HTML section extraction results (extract_html.py).
+ */
+export const HtmlSectionSchema = z.object({
+  section_idx: z.number(),
+  heading: z.string().nullable(),
+  level: z.number().nullable(),
+  text: z.string().optional(),
+});
+
+/**
+ * Schema for HTML extraction results (extract_html.py).
+ */
+export const HtmlExtractionResultSchema = z.object({
+  error: z.string().optional(),
+  sections: z.array(HtmlSectionSchema).optional(),
+  pages: z.array(z.object({
+    page_idx: z.number(),
+    text: z.string(),
+    tokens: z.number().optional(),
+  })).optional(),
+  tables: z.array(z.object({
+    section_idx: z.number(),
+    html: z.string(),
+  })).optional(),
+});
+
+export type HtmlExtractionResult = z.infer<typeof HtmlExtractionResultSchema>;
+export type HtmlSection = z.infer<typeof HtmlSectionSchema>;
+
+// =============================================================================
 // Validation Helpers
 // =============================================================================
 
